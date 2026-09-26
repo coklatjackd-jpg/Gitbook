@@ -250,6 +250,47 @@
             border-bottom: none;
         }
 
+        body.compact-mode .book-header {
+            height: 42px;
+        }
+
+        body.compact-mode .book-header h1 {
+            line-height: 42px;
+            font-size: 18px;
+        }
+
+        body.compact-mode .book-header-actions {
+            top: 6px;
+        }
+
+        body.compact-mode .page-wrapper,
+        body.compact-mode .page-inner,
+        body.compact-mode .markdown-section {
+            margin-top: 0 !important;
+            padding-top: 8px !important;
+        }
+
+        body.compact-mode .markdown-section h1,
+        body.compact-mode .markdown-section h2,
+        body.compact-mode .markdown-section h3,
+        body.compact-mode .markdown-section h4,
+        body.compact-mode .markdown-section p,
+        body.compact-mode .markdown-section ul,
+        body.compact-mode .markdown-section ol,
+        body.compact-mode .markdown-section blockquote {
+            margin-top: 0.5em !important;
+            margin-bottom: 0.5em !important;
+        }
+
+        body.compact-mode .markdown-section img {
+            margin-top: 6px;
+            margin-bottom: 6px;
+        }
+
+        body.compact-mode .settings-body {
+            padding-top: 12px;
+        }
+
         .switch {
             position: relative;
             display: inline-block;
@@ -314,6 +355,93 @@
         .settings-preview-actions .primary {
             background: #111827;
             color: #fff;
+        }
+
+        .settings-secondary-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .settings-secondary-btn {
+            width: 100%;
+            height: 38px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            border-radius: 10px;
+            background: transparent;
+            color: #111827;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .password-modal {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.42);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            z-index: 120;
+        }
+
+        .password-modal.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .password-modal-card {
+            width: min(360px, 90vw);
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 24px 50px rgba(15, 23, 42, 0.18);
+            padding: 22px 18px 18px;
+        }
+
+        .password-modal-card h4 {
+            margin: 0 0 14px;
+            font-size: 18px;
+            color: #111827;
+        }
+
+        .password-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 11px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #f9fafb;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+
+        .password-modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .password-modal-actions button {
+            flex: 1;
+            height: 36px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .password-modal-actions .primary {
+            background: #111827;
+            color: #fff;
+        }
+
+        .password-modal-actions .secondary {
+            background: #f3f4f6;
+            color: #111827;
         }
 
         body.dark-mode {
@@ -395,18 +523,52 @@
         }
 
         body.dark-mode .settings-close,
-        body.dark-mode .settings-preview-actions button {
+        body.dark-mode .settings-preview-actions button,
+        body.dark-mode .settings-secondary-btn,
+        body.dark-mode .password-modal-card,
+        body.dark-mode .password-modal-card h4,
+        body.dark-mode .password-input {
             background: #1e293b;
             color: #f8fafc;
+        }
+
+        body.dark-mode .settings-secondary-btn {
+            border-color: rgba(148, 163, 184, 0.3);
         }
 
         body.dark-mode .settings-option {
             border-bottom-color: rgba(148, 163, 184, 0.14);
         }
 
+        body.dark-mode .password-modal-card {
+            background: #111827;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 24px 50px rgba(2, 6, 23, 0.7);
+        }
+
+        body.dark-mode .password-modal-card h4 {
+            color: #f8fafc;
+        }
+
+        body.dark-mode .password-input {
+            background: #0f172a;
+            border-color: rgba(148, 163, 184, 0.2);
+            color: #f8fafc;
+        }
+
+        body.dark-mode .password-modal-actions .secondary {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
         body.dark-mode .settings-preview-actions .primary {
-            background: #f8fafc;
-            color: #111827;
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            color: #ffffff;
+            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.28);
+        }
+
+        body.dark-mode .settings-preview-actions .primary:hover {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
         }
 
         body.dark-mode .summary li a,
@@ -588,7 +750,7 @@
                 <div class="settings-option">
                     <span>Compact view</span>
                     <label class="switch" aria-label="Toggle compact view">
-                        <input type="checkbox" />
+                        <input type="checkbox" id="compactModeToggle" />
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -606,12 +768,30 @@
                 </div>
             </div>
 
+            <div class="settings-secondary-actions">
+                <button class="settings-secondary-btn" type="button" id="editModeBtn">Edit Mode</button>
+                <button class="settings-secondary-btn" type="button" id="createPasswordBtn">Create Password</button>
+                <button class="settings-secondary-btn" type="button" id="changePasswordBtn">Change Password</button>
+            </div>
+
             <div class="settings-preview-actions">
                 <button class="primary" type="button">Save</button>
                 <button type="button">Reset</button>
             </div>
         </div>
     </aside>
+
+    <div class="password-modal" id="passwordModal" aria-live="polite">
+        <div class="password-modal-card">
+            <h4 id="passwordModalTitle">Edit Mode</h4>
+            <input id="passwordField" class="password-input" type="password" placeholder="Enter password" />
+            <input id="passwordConfirmField" class="password-input" type="password" placeholder="Confirm new password" style="display:none;" />
+            <div class="password-modal-actions">
+                <button class="secondary" type="button" id="cancelPasswordBtn">Cancel</button>
+                <button class="primary" type="button" id="confirmPasswordBtn">Continue</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -624,8 +804,8 @@
                                 
                                 <h1 id="introduction">Introduction</h1>
 <h2 id="an-image">An Image</h2>
-<p><a href="IMG_6786.JPG" data-lightbox="7605f42c-2baa-47f7-afa6-fc9b3c1cbc39" data-title="Dog"><img src="IMG_6786.JPG" alt="Dog"></a>
-<a href="IMG_6785.JPG" data-lightbox="7605f42c-2baa-47f7-afa6-fc9b3c1cbc39" data-title="Dog2"><img src="IMG_6785.JPG" alt="Dog2"></a></p>
+<p><a href="lori.jpeg" data-lightbox="7605f42c-2baa-47f7-afa6-fc9b3c1cbc39" data-title="Dog"><img src="lori.jpeg" alt="Dog"></a>
+<a href="lori2.jpeg" data-lightbox="7605f42c-2baa-47f7-afa6-fc9b3c1cbc39" data-title="Dog2"><img src="lori2.jpeg" alt="Dog2"></a></p>
 <blockquote>
 <p>Image Source: <a href="https://cc0.photo/2017/09/08/sneaking-white-dog/" target="_blank">https://cc0.photo/2017/09/08/sneaking-white-dog/</a><br>Photographer: Raffael Herrmann</p>
 </blockquote>
@@ -669,10 +849,137 @@
             const settingsBackdrop = document.getElementById('settingsBackdrop');
             const closeSettingsButton = document.querySelector('.settings-close');
             const darkModeToggle = document.getElementById('darkModeToggle');
+            const compactModeToggle = document.getElementById('compactModeToggle');
+            const editModeBtn = document.getElementById('editModeBtn');
+            const createPasswordBtn = document.getElementById('createPasswordBtn');
+            const changePasswordBtn = document.getElementById('changePasswordBtn');
+            const passwordModal = document.getElementById('passwordModal');
+            const passwordModalTitle = document.getElementById('passwordModalTitle');
+            const passwordField = document.getElementById('passwordField');
+            const passwordConfirmField = document.getElementById('passwordConfirmField');
+            const cancelPasswordBtn = document.getElementById('cancelPasswordBtn');
+            const confirmPasswordBtn = document.getElementById('confirmPasswordBtn');
             const linkInput = document.getElementById('shareLinkInput');
             const currentUrl = window.location.href;
 
+            let savedPassword = localStorage.getItem('gitbookPassword') || '';
+            let passwordMode = 'edit';
+
             linkInput.value = currentUrl;
+
+            function openPasswordModal(mode) {
+                passwordMode = mode;
+                passwordField.value = '';
+                passwordConfirmField.value = '';
+                passwordConfirmField.style.display = (mode === 'create' || mode === 'change') ? 'block' : 'none';
+
+                if (mode === 'edit') {
+                    passwordModalTitle.textContent = 'Edit Mode';
+                    passwordField.placeholder = 'Enter password';
+                    confirmPasswordBtn.textContent = 'Unlock';
+                } else if (mode === 'create') {
+                    passwordModalTitle.textContent = 'Create Password';
+                    passwordField.placeholder = 'Create password';
+                    passwordConfirmField.placeholder = 'Confirm password';
+                    confirmPasswordBtn.textContent = 'Create';
+                } else if (mode === 'change') {
+                    passwordModalTitle.textContent = 'Change Password';
+                    passwordField.placeholder = 'Current password';
+                    passwordConfirmField.placeholder = 'New password';
+                    confirmPasswordBtn.textContent = 'Save';
+                }
+
+                passwordModal.classList.add('open');
+            }
+
+            function closePasswordModal() {
+                passwordModal.classList.remove('open');
+                passwordField.value = '';
+                passwordConfirmField.value = '';
+            }
+
+            editModeBtn.addEventListener('click', function () {
+                if (!savedPassword) {
+                    openPasswordModal('create');
+                } else {
+                    openPasswordModal('edit');
+                }
+            });
+
+            createPasswordBtn.addEventListener('click', function () {
+                openPasswordModal('create');
+            });
+
+            changePasswordBtn.addEventListener('click', function () {
+                if (!savedPassword) {
+                    openPasswordModal('create');
+                } else {
+                    openPasswordModal('change');
+                }
+            });
+
+            cancelPasswordBtn.addEventListener('click', closePasswordModal);
+
+            passwordModal.addEventListener('click', function (event) {
+                if (event.target === passwordModal) {
+                    closePasswordModal();
+                }
+            });
+
+            confirmPasswordBtn.addEventListener('click', function () {
+                const firstValue = passwordField.value.trim();
+                const secondValue = passwordConfirmField.value.trim();
+
+                if (passwordMode === 'edit') {
+                    if (!firstValue) {
+                        alert('Please enter your password.');
+                        return;
+                    }
+
+                    if (firstValue === savedPassword) {
+                        alert('Edit mode unlocked.');
+                        closePasswordModal();
+                    } else {
+                        alert('Password is incorrect.');
+                    }
+                    return;
+                }
+
+                if (passwordMode === 'create') {
+                    if (!firstValue || !secondValue) {
+                        alert('Please fill in both password fields.');
+                        return;
+                    }
+
+                    if (firstValue !== secondValue) {
+                        alert('Password does not match.');
+                        return;
+                    }
+
+                    savedPassword = firstValue;
+                    localStorage.setItem('gitbookPassword', savedPassword);
+                    alert('Password created successfully.');
+                    closePasswordModal();
+                    return;
+                }
+
+                if (passwordMode === 'change') {
+                    if (!firstValue || !secondValue) {
+                        alert('Please fill in both password fields.');
+                        return;
+                    }
+
+                    if (firstValue !== savedPassword) {
+                        alert('Current password is incorrect.');
+                        return;
+                    }
+
+                    savedPassword = secondValue;
+                    localStorage.setItem('gitbookPassword', savedPassword);
+                    alert('Password changed successfully.');
+                    closePasswordModal();
+                }
+            });
 
             shareTrigger.addEventListener('click', function (event) {
                 event.stopPropagation();
@@ -714,6 +1021,10 @@
 
             darkModeToggle.addEventListener('change', function () {
                 document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+            });
+
+            compactModeToggle.addEventListener('change', function () {
+                document.body.classList.toggle('compact-mode', compactModeToggle.checked);
             });
 
             document.querySelectorAll('[data-action]').forEach(function (button) {
